@@ -899,6 +899,376 @@
       "comparison": "exact",
       "timeout": 10,
       "points": 1
+    },
+    {
+      "name": "Test 113",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedPostsUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 92",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testCommentPostSuccessfully",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 93",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 94",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 95",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 96",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 97",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentNotFound",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 98",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 99",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentNoPermissions",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 100",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testDeleteCommentSuccessfully",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 101",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowingNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 102",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowingNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 103",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowingUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 104",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowingLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 105",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowersNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 106",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowersNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 107",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowersUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 108",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowersLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 109",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowersNotFound",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 110",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetFollowersWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 111",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedPostsNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 112",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedPostsNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 113",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedPostsUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 114",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedPostsLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 115",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostCommentedPostsNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 116",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostCommentedPostsNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 117",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostCommentedPostsUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 118",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostCommentedPostsLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 119",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostFollowedPostsNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 120",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostFollowedPostsNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 121",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostFollowedPostsUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 122",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostFollowedPostsLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 123",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedUsersNoUsername",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 124",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedUsersNoPassword",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 125",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedUsersUsernameDoesNotExists",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 126",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedUsersLoginCredentialsAreWrong",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test 127",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedUsersSuccessfully",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
     }
   ]
 }
