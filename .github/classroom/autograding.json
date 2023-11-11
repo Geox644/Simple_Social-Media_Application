@@ -11,9 +11,9 @@
       "points": 1
     },
     {
-      "name": "Test 24",
+      "name": "Test 2",
       "setup": "",
-      "run": "gradle test --tests AppTest.testFollowIdWrong",
+      "run": "gradle test --tests AppTest.testCreateUserUserAlreadyExists",
       "input": "",
       "output": "",
       "comparison": "exact",
