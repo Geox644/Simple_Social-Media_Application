@@ -843,7 +843,7 @@
     {
       "name": "Test 85",
       "setup": "",
-      "run": "gradle test --tests AppTest.testPostDetailsAlreadyUnfollowing",
+      "run": "gradle test --tests AppTest.testPostDetailsIdWrongSecond",
       "input": "",
       "output": "",
       "comparison": "exact",
