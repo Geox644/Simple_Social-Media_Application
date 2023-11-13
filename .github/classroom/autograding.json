@@ -48,7 +48,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 6",
@@ -118,7 +118,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 13",
@@ -178,7 +178,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 19",
@@ -248,7 +248,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 26",
@@ -258,7 +258,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 27",
@@ -328,7 +328,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 34",
@@ -338,7 +338,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 35",
@@ -408,7 +408,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 42",
@@ -418,7 +418,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 43",
@@ -488,7 +488,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 50",
@@ -498,7 +498,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 51",
@@ -588,7 +588,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 60",
@@ -668,7 +668,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 68",
@@ -918,7 +918,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 93",
@@ -988,7 +988,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 2
     },
     {
       "name": "Test 100",
@@ -998,7 +998,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
     },
     {
       "name": "Test 101",
@@ -1268,7 +1268,37 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 1
+      "points": 3
+    },
+    {
+      "name": "Test 129",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostCommentedPostsSuccessfully",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 3
+    },
+    {
+      "name": "Test 129",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostCommentedPostsSuccessfully",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 3
+    },
+    {
+      "name": "Test 130",
+      "setup": "",
+      "run": "gradle test --tests AppTest.testGetMostLikedPostsSuccessfully",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 3
     }
   ]
 }
