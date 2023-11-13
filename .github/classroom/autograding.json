@@ -823,7 +823,7 @@
     {
       "name": "Test 83",
       "setup": "",
-      "run": "gradle test --tests AppTest.testPostDetailsCommentNotFound",
+      "run": "gradle test --tests AppTest.testPostDetailsIdNotFound",
       "input": "",
       "output": "",
       "comparison": "exact",
