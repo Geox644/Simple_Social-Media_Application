@@ -988,7 +988,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 2
+      "points": 1
     },
     {
       "name": "Test 100",
@@ -998,7 +998,7 @@
       "output": "",
       "comparison": "exact",
       "timeout": 10,
-      "points": 3
+      "points": 2
     },
     {
       "name": "Test 101",
