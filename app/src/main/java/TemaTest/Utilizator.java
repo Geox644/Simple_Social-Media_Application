@@ -4,29 +4,15 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class Utilizator {
-    private String username;
-    private String password;
-    private boolean logged;
+    private final String username;
+    private final String password;
 
     public Utilizator(String username, String password) {
         this.username = username;
         this.password = password;
-        this.logged = false;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String toString() {
-        return username + "," + password;
-    }
-
-    public void createUser(String username, String password) {
+    public void createUser(String username) {
         if (userExists(username)) {
             System.out.println("{'status':'error','message':'User already exists'}");
         } else {
@@ -56,7 +42,7 @@ public class Utilizator {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length > 1 && parts[0].equals(username) && parts[1].equals(password)) {
-                    return true; // parola este corecta
+                    return true; // si parola este corecta
                 }
             }
         } catch (IOException e) {
@@ -66,14 +52,13 @@ public class Utilizator {
     }
 
     /*  SCRIERE IN FISIER  */
-
     public void writeToFile() {
         FileWriter userFile;
         try {
             userFile = new FileWriter("users.csv", true);
 
             BufferedWriter userWrite = new BufferedWriter(userFile);
-            userFile.write(this.toString() + "\n");
+            userFile.write(username + "," + password + "\n");
 
             userWrite.close();
         } catch (
@@ -82,28 +67,21 @@ public class Utilizator {
         }
     }
 
-    public boolean login() {
-        if (checkLogin(username, password)) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean checkLogin() {
+        return !checkLogin(username, password);
     }
 
-    public boolean followUser(String followedUsername) {
+    public void followUser(String followedUsername) {
 
         if (userExists(followedUsername)) {
             if (isAlreadyFollowing(followedUsername)) {
                 System.out.println("{'status':'error','message':'The username to follow was not valid'}");
-                return false;
             } else {
                 System.out.println("{'status':'ok','message':'Operation executed successfully'}");
                 writeFollowToFile(followedUsername);
-                return true;
             }
         } else {
             System.out.println("{'status':'error','message':'The username to follow was not valid'}");
-            return false;
         }
     }
 
@@ -116,13 +94,14 @@ public class Utilizator {
             e.printStackTrace();
         }
     }
+
     private boolean isAlreadyFollowing(String followedUsername) {
         try (BufferedReader reader = new BufferedReader(new FileReader("follows.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length > 1 && parts[0].equals(username) && parts[1].equals(followedUsername)) {
-                    return true; // User is already following
+                    return true; // deja il urmareste
                 }
             }
         } catch (IOException e) {
@@ -133,15 +112,14 @@ public class Utilizator {
 
     public boolean unfollowUser(String unfollowedUsername) {
         if (userExists(unfollowedUsername)) {
-            // Verifica daca utilizatorul curent a dat deja unfollow
+            // verifica daca i-a dat deja unfollow
             if (isAlreadyUnfollowed(unfollowedUsername)) {
                 System.out.println("{'status':'error','message':'The username to unfollow was not valid'}");
                 return false;
             }
-            // Verifica daca utilizatorul curent urmareste deja utilizatorul specificat
+            // verifica daca il urmareste ca sa-i poata da unfollow
             if (isAlreadyFollowing(unfollowedUsername)) {
-                // Elimina relatia de follow din fisierul follows.csv
-                removeFollowFromFile(unfollowedUsername);
+                removeFollowFromFile(unfollowedUsername); // il sterge din fiser
                 System.out.println("{'status':'ok','message':'Operation executed successfully'}");
                 return true;
             } else {
@@ -155,27 +133,23 @@ public class Utilizator {
     }
 
     private void removeFollowFromFile(String unfollowedUsername) {
-        // Creeaza o lista temporara pentru a retine relatiile de follow
-        ArrayList<String> tempFollows = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("follows.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length > 1 && parts[0].equals(username) && parts[1].equals(unfollowedUsername)) {
-
-                } else {
-
-                    tempFollows.add(line);
+                if (!parts[0].equals(username) && !parts[1].equals(unfollowedUsername)) {
+                    temp.add(line);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Suprascrie fisierul follows.csv cu lista actualizata
+        // suprascriu fiserul cu datele din arraylist
         try (PrintWriter followWriter = new PrintWriter(new FileWriter("follows.csv"))) {
-            for (String follow : tempFollows) {
+            for (String follow : temp) {
                 followWriter.println(follow);
             }
         } catch (IOException e) {
@@ -183,19 +157,19 @@ public class Utilizator {
         }
     }
 
-    private boolean isAlreadyUnfollowed(String unfollowedUsername) {
+    public boolean isAlreadyUnfollowed(String unfollowedUsername) {
         try (BufferedReader reader = new BufferedReader(new FileReader("follows.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length > 1 && parts[0].equals(username) && parts[1].equals(unfollowedUsername)) {
-                    return false; // Utilizatorul curent nu a dat inca unfollow
+                if (parts[0].equals(username) && parts[1].equals(unfollowedUsername)) {
+                    return false; // nu il urmareste
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true; // Utilizatorul curent a dat deja unfollow
+        return true; // il urmareste
     }
 
     public void listaPersoaneUrmarite(String username) {
@@ -204,7 +178,7 @@ public class Utilizator {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (username.equals(parts[0]) ) {
+                if (username.equals(parts[0])) {
 
                     if (aux) {
                         System.out.print("{ 'status' : 'ok', 'message' : [");
@@ -215,7 +189,7 @@ public class Utilizator {
 
                     System.out.print("'" + parts[1] + "'");
                 }
-                }
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -236,7 +210,7 @@ public class Utilizator {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (username.equals(parts[1]) ) {
+                if (username.equals(parts[1])) {
 
                     if (aux) {
                         System.out.print("{ 'status' : 'ok', 'message' : [");
@@ -257,35 +231,85 @@ public class Utilizator {
         }
     }
 
-    public void topCinciCeiMaiUrmaritiUsers(String username) {
-        boolean aux = true;
-        int count = 0;
+
+    public void topCinciCeiMaiUrmaritiUsers() {
+        String[] users = new String[20];
+        int[] counts = new int[20];
+
         try (BufferedReader reader = new BufferedReader(new FileReader("follows.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (username.equals(parts[1]) ) {
-                    count++;
-                    if (aux) {
-                        System.out.print("{ 'status' : 'ok', 'message' : [");
-                        aux = false;
-                    } else {
-                        System.out.print(",");
-                    }
+                String followed = parts[1];
 
-                    System.out.print("'" + parts[0] + "'");
+                int index = findUser(users, followed);
+
+                // daca user exista, incrementez numarul de aparitia user-ului
+                if (index != -1) {
+                    counts[index]++;
+                } else {
+                    int emptyIndex = findEmptyIndex(users);
+                    users[emptyIndex] = followed;
+                    counts[emptyIndex] = 1;
                 }
-
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (!aux) {
-            System.out.print("]}");
+        // sortez descrescator ca sa iau nr de aparitii cel mai mare
+        sortArrays(users, counts);
+
+        // afisez primii 5
+        System.out.print("{ 'status' : 'ok', 'message' : [");
+        boolean aux = false;
+        for (int i = 0; i < 5; i++) {
+            if (users[i] != null) {
+                if (aux) {
+                    System.out.print(",");
+                }
+                System.out.print("{'username': '" + users[i] + "', 'number_of_followers': '" + counts[i] + "'}");
+                aux = true;
+            }
         }
+        System.out.println(" ]}");
     }
 
+    // functie care cauta daca deja user-ul a fost deja gasit pentru a putea fi numarat
+    private static int findUser(String[] users, String user) {
+        for (int i = 0; i < users.length; i++) {
+            if (user != null && user.equals(users[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
+    // daca user-ul nu a fost deja gasit il adaug intr-o noua pozitie in vector
+    private static int findEmptyIndex(String[] users) {
+        for (int i = 0; i < users.length; i++) {
+            if (users[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // sortare descrescatoare
+    private static void sortArrays(String[] users, int[] counts) {
+        for (int i = 0; i < users.length - 1; i++) {
+            for (int j = i + 1; j < users.length; j++) {
+                if (counts[i] < counts[j]) {
+                    String tempUser = users[i];
+                    int tempCount = counts[i];
+
+                    users[i] = users[j];
+                    counts[i] = counts[j];
+
+                    users[j] = tempUser;
+                    counts[j] = tempCount;
+                }
+            }
+        }
+    }
 
 }

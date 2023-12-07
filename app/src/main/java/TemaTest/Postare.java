@@ -4,14 +4,16 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class Postare implements Likeable {
-    private String text;
-    private int id = 0;
+    private final String text;
+    private final int id;
     private static int idCount = 1;
     private int nrLikes;
-    private String user;
+    private final String user;
+
     public Postare(String text, String user) {
         this.text = text;
         this.id = idCount++;
@@ -22,32 +24,15 @@ public class Postare implements Likeable {
     public static void clean() {
         try (PrintWriter postareWriter = new PrintWriter(new FileWriter("postare.csv"))) {
             postareWriter.print("");
-            idCount = 1;
-            System.out.println("All post data cleaned up!");
+            idCount = 1; // resetare pt id
+            System.out.println("Clean");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public boolean textLength() {
-        if (text.length() <= 300)
-            return true;
-        else
-            return false;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-
-    public int getNumarLikeuri() {
-        return nrLikes;
+        return text.length() <= 300;
     }
 
     public void writeToFile() {
@@ -59,7 +44,7 @@ public class Postare implements Likeable {
     }
 
 
-    // Metoda pentru a sterge postarea din fisier in functie de ID i -- merge in consola
+    // sterg postarea din fiser in functie de id -- merge in consola
     public static void deletePostByIdFromFile(int postId) {
         ArrayList<String> tempPosts = new ArrayList<>();
         boolean postFound = false;
@@ -70,7 +55,6 @@ public class Postare implements Likeable {
                 String[] parts = line.split(",");
                 int currentPostId = Integer.parseInt(parts[0]);
                 if (currentPostId != postId) {
-                    // Adauga celelalte postari in lista (cu exceptia celei cu ID-ul specificat)
                     tempPosts.add(line);
                 } else {
                     postFound = true;
@@ -87,33 +71,22 @@ public class Postare implements Likeable {
         } else {
             System.out.println("{'status':'ok','message':'Post deleted successfully'}");
         }
-        // Suprascrie fisierul postare.csv cu lista actualizata
+        // suprascriu postare.csv cu lista actualizata stocata in arraylist
         try (PrintWriter writer = new PrintWriter(new FileWriter("postare.csv"))) {
             for (String post : tempPosts) {
                 writer.println(post);
             }
-            //   System.out.println("{'status':'ok','message':'Post deleted successfully'}");
         } catch (IOException e) {
             e.printStackTrace();
         }
         tempPosts.clear();
     }
 
-    // Metoda pentru a obtine o postare in functie de ID
-//    public static Postare getPostById(int postId) {
-//        for (Postare post : postList) {
-//            if (post.getId() == postId) {
-//                return post;
-//            }
-//        }
-//        return null;
-//    }
-
     public void like(int postId, String username) {
         ArrayList<String> tempPosts = new ArrayList<>();
         boolean postFound = false;
 
-        if(userAlreadyLike(username, postId)) {
+        if (userAlreadyLike(username, postId)) {
             System.out.println("{'status':'error','message':'The post identifier to like was not valid'}");
             return;
         }
@@ -125,15 +98,14 @@ public class Postare implements Likeable {
                 int currentPostId = Integer.parseInt(parts[0]);
 
                 if (currentPostId == postId) {
-                    // Gasit postul cu ID-ul specificat in fisier
-                    int currentNrLikes = Integer.parseInt(parts[3]); // presupunand ca nrLikes este pe pozitia 3
+                    int currentNrLikes = Integer.parseInt(parts[3]);
                     currentNrLikes++; // crestere nrLikes
                     this.nrLikes = currentNrLikes;
-                    line = currentPostId + "," + parts[1] + "," +  parts[2]+ "," + currentNrLikes; // actualizare linie
+                    line = currentPostId + "," + parts[1] + "," + parts[2] + "," + currentNrLikes; // actualizare linie
                     postFound = true;
                 }
 
-                tempPosts.add(line); // adaugare linie in lista temporara
+                tempPosts.add(line); // adaug linie in arraylist-ul temporar
             }
 
         } catch (IOException | NumberFormatException e) {
@@ -141,13 +113,14 @@ public class Postare implements Likeable {
         }
 
 
-            if (postFound) {
-                System.out.println("{'status':'ok','message':'Operation executed successfully'}");
-            } else {
-                System.out.println("{'status':'error','message':'The post identifier to like was not valid'}");
-                return;
-            }
+        if (postFound) {
+            System.out.println("{'status':'ok','message':'Operation executed successfully'}");
+        } else {
+            System.out.println("{'status':'error','message':'The post identifier to like was not valid'}");
+            return;
+        }
 
+        // scriu informatiile in alt fiser pentru ca am sa am nevoie la verificari ulterioare (pt unlike)
         try (PrintWriter likeWriter = new PrintWriter(new FileWriter("likePostare.csv", true))) {
             likeWriter.println(postId + "," + username + "," + nrLikes);
         } catch (IOException e) {
@@ -163,6 +136,7 @@ public class Postare implements Likeable {
         }
         tempPosts.clear();
     }
+
     private boolean userAlreadyLike(String username, int id) {
         try (BufferedReader reader = new BufferedReader(new FileReader("likePostare.csv"))) {
             String line;
@@ -191,15 +165,13 @@ public class Postare implements Likeable {
                 String[] parts = lineLike.split(",");
                 int currentPostId = Integer.parseInt(parts[0]);
                 if (currentPostId == postId && username.equals(parts[1])) {
-                    // Gasit postul cu ID-ul specificat in fisierul like.csv
                     int currentNrLikes = Integer.parseInt(parts[2]);
                     currentNrLikes--; // scadere nrLikes
                     this.nrLikes = currentNrLikes;
                     lineLike = currentPostId + "," + parts[1] + "," + currentNrLikes;
                     postFound = true;
-                } else {
-                    tempLikes.add(lineLike); // adaugare linie in lista temporara
                 }
+                tempLikes.add(lineLike); // adaug linie in lista temporara
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,13 +182,12 @@ public class Postare implements Likeable {
             while ((linePosts = readerPosts.readLine()) != null) {
                 String[] partsPosts = linePosts.split(",");
                 int currentPostIdPosts = Integer.parseInt(partsPosts[0]);
-                if (currentPostIdPosts == postId ) {
-                    // Gasit postul cu ID-ul specificat in fisierul postare.csv
+                if (currentPostIdPosts == postId) {
                     int currentNrLikes = Integer.parseInt(partsPosts[3]);
                     currentNrLikes--; // scadere nrLikes
-                    linePosts = currentPostIdPosts + "," + partsPosts[1] + "," + partsPosts[2] + "," + currentNrLikes; // actualizare linie
+                    linePosts = currentPostIdPosts + "," + partsPosts[1] + "," + partsPosts[2] + "," + currentNrLikes;
                 }
-                tempPosts.add(linePosts); // adaugare linie in lista temporara
+                tempPosts.add(linePosts);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -231,7 +202,7 @@ public class Postare implements Likeable {
             System.out.println("{'status':'ok','message':'Operation executed successfully'}");
         }
 
-        // Suprascrie fisierul postare.csv cu lista actualizata
+
         try (PrintWriter writerPosts = new PrintWriter(new FileWriter("postare.csv"))) {
             for (String post : tempPosts) {
                 writerPosts.println(post);
@@ -241,7 +212,6 @@ public class Postare implements Likeable {
         }
         tempPosts.clear();
 
-        // Suprascrie fisierul like.csv cu lista actualizata
         try (PrintWriter writerLikes = new PrintWriter(new FileWriter("likePostare.csv"))) {
             for (String like : tempLikes) {
                 writerLikes.println(like);
@@ -252,11 +222,9 @@ public class Postare implements Likeable {
         tempLikes.clear();
     }
 
-    /* lista postari peroane urmarite */
-
-
-    public static void followedListPostDate(String username) {
-        boolean aux = true;
+    /* lista postari peroane urmarite  */
+    public void followedListPostDate(String username) {
+        ArrayList<String> temp = new ArrayList<>();
         try (BufferedReader readerLikes = new BufferedReader(new FileReader("follows.csv"))) {
             String line;
             while ((line = readerLikes.readLine()) != null) {
@@ -273,14 +241,7 @@ public class Postare implements Likeable {
                                 Date date = new Date();
                                 String currentDateAsString = dateFormat.format(date);
 
-                                if (aux) {
-                                    System.out.print("{ 'status' : 'ok', 'message' : [");
-                                    aux = false;
-                                } else {
-                                    System.out.print(",");
-                                }
-
-                                System.out.print("{''" + postParts[0] + "', 'post_text' : '" + postParts[2]
+                                temp.add("{'post_id':'" + postParts[0] + "', 'post_text' : '" + postParts[2]
                                         + "', 'post_date' : '" + currentDateAsString + "', 'username' : '" + postParts[1] + "'}");
                             }
                         }
@@ -292,12 +253,104 @@ public class Postare implements Likeable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (!aux) {
+        temp.sort(Collections.reverseOrder());
+
+        if (!temp.isEmpty()) {
+            System.out.print("{ 'status' : 'ok', 'message' : [");
+            for (int i = 0; i < temp.size(); i++) {
+                if (i != 0) {
+                    System.out.print(",");
+                }
+                System.out.print(temp.get(i));
+            }
             System.out.print("]}");
+        }
+    }
+
+    public void UserListPost(String username) {
+        ArrayList<String> temp = new ArrayList<>();
+
+        try (BufferedReader postReader = new BufferedReader(new FileReader("postare.csv"))) {
+            String postLine;
+            while ((postLine = postReader.readLine()) != null) {
+                String[] postParts = postLine.split(",");
+                if (username.equals(postParts[1])) {
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = new Date();
+                    String currentDateAsString = dateFormat.format(date);
+
+                    temp.add("{'post_id':'" + postParts[0] + "', 'post_text' : '" + postParts[2]
+                            + "', 'post_date' : '" + currentDateAsString + "'}");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // sorteaza, pe urma inverseaza pentru a fi descrescator
+        Collections.sort(temp, Collections.reverseOrder());
+
+        if (!temp.isEmpty()) {
+            System.out.print("{ 'status' : 'ok', 'message' : [");
+            for (int i = 0; i < temp.size(); i++) {
+                if (i != 0) {
+                    System.out.print(",");
+                }
+                System.out.print(temp.get(i));
+            }
+            System.out.print("]}");
+        }
+    }
+
+    public void detaliiPostare(int idPost) {
+        boolean aux = true;
+        File file = new File("postare.csv");
+        if (file.length() == 0) {
+            System.out.println("{'status':'error','message':'The post identifier was not valid'}");
+            return;
+        }
+        try (BufferedReader readerLikes = new BufferedReader(new FileReader("postare.csv"))) {
+            String line;
+            while ((line = readerLikes.readLine()) != null) {
+                String[] parts = line.split(",");
+                int currentPostId = Integer.parseInt(parts[0]);
+                if (currentPostId == idPost) {
+
+                    try (BufferedReader postReader = new BufferedReader(new FileReader("comentariu.csv"))) {
+                        String postLine;
+                        while ((postLine = postReader.readLine()) != null) {
+                            String[] postParts = postLine.split(",");
+                            int currentPostId2 = Integer.parseInt(parts[0]);
+                            if (currentPostId2 == idPost) {
+                                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                                Date date = new Date();
+                                String currentDateAsString = dateFormat.format(date);
+                                if (aux) {
+                                    System.out.print("{ 'status' : 'ok', 'message' : [");
+                                    aux = false;
+                                } else {
+                                    System.out.print(",");
+                                }
+                                System.out.print("{'post_text':'" + parts[2] + "', 'post_date' : '" + currentDateAsString + "', 'username' : '" + parts[1] +
+                                        "', 'number_of_likes' :'" + parts[3] + "', 'comments' : [{'comment_id' : '" + postParts[3] + "' ,'comment_text' : '" +
+                                        postParts[4] + "', 'comment_date' : '" + currentDateAsString + "', 'username' : '" + postParts[1] + "', 'number_of_likes' : '" +
+                                        postParts[5] + "'}] }]");
+
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("{'status':'error','message':'The post identifier was not valid'}");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (!aux) {
+            System.out.println(" }");
         }
     }
 
 
 }
-
-

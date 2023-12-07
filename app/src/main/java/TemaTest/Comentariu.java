@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class Comentariu {
     String text;
-    private int id = 0;
-    private int idPostare;
+    private final int id;
+    private final int idPostare;
     private static int idCount = 1;
-    private String user, password;
+    private final String user, password;
     private int nrLikes;
 
 
@@ -25,19 +25,17 @@ public class Comentariu {
         try (PrintWriter postareWriter = new PrintWriter(new FileWriter("comentariu.csv"))) {
             postareWriter.print("");
             idCount = 1;
-            System.out.println("All post data cleaned up!");
+            System.out.println("Clean");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public boolean textLength() {
-        if (text.length() <= 300)
-            return true;
-        else
-            return false;
+        return text.length() <= 300;
     }
 
+    // scriu comentariile in fiser
     public void writeToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("comentariu.csv", true))) {
             writer.write(idPostare + "," + user + "," + password + "," + id + "," + text + "," + nrLikes + "\n");
@@ -47,8 +45,8 @@ public class Comentariu {
     }
 
     public static void deleteCommByIdFromFile(int postId, String username, String password) {
-        ArrayList<String> tempPosts = new ArrayList<>();
-        boolean postFound = false;
+        ArrayList<String> tempComm = new ArrayList<>();
+        boolean commFound = false;
 
         try (BufferedReader reader = new BufferedReader(new FileReader("comentariu.csv"))) {
             String line;
@@ -60,30 +58,29 @@ public class Comentariu {
                     return;
                 }
                 if (currentPostId != postId) {
-                    tempPosts.add(line);
+                    tempComm.add(line);
                 } else {
-                    postFound = true;
+                    commFound = true;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (!postFound) {
+        if (!commFound) {
             System.out.println("{'status':'error','message':'The identifier was not valid'}");
-            // tempPosts.clear();
             return;
         }
 
         try (PrintWriter writer = new PrintWriter(new FileWriter("comentariu.csv"))) {
-            for (String post : tempPosts) {
-                writer.println(post);
+            for (String comm : tempComm) {
+                writer.println(comm);
             }
             System.out.println("{'status':'ok','message':'Operation executed successfully'}");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        tempPosts.clear();
+        tempComm.clear();
     }
 
     public void like(int commId, String username) {
@@ -102,7 +99,6 @@ public class Comentariu {
                 int currentCommId = Integer.parseInt(parts[0]);
 
                 if (currentCommId == commId) {
-                    // Gasit postul cu ID-ul specificat in fisier
                     int currentNrLikes = Integer.parseInt(parts[5]);
                     currentNrLikes++; // crestere nrLikes
                     this.nrLikes = currentNrLikes;
@@ -117,7 +113,6 @@ public class Comentariu {
             e.printStackTrace();
         }
 
-
         if (commFound) {
             System.out.println("{'status':'ok','message':'Operation executed successfully'}");
         } else {
@@ -131,8 +126,8 @@ public class Comentariu {
             e.printStackTrace();
         }
         try (PrintWriter writer = new PrintWriter(new FileWriter("comentariu.csv"))) {
-            for (String post : tempComm) {
-                writer.println(post);
+            for (String comm : tempComm) {
+                writer.println(comm);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,64 +151,63 @@ public class Comentariu {
         return false;
     }
 
-    public void unlike(int postId, String username) {
-        ArrayList<String> tempPosts = new ArrayList<>();
+    public void unlike(int commId, String username) {
+        ArrayList<String> tempComm = new ArrayList<>();
         ArrayList<String> tempLikes = new ArrayList<>();
-        boolean postFound = false;
+        boolean commFound = false;
 
         try (BufferedReader readerLikes = new BufferedReader(new FileReader("likeComentariu.csv"))) {
             String lineLike;
             while ((lineLike = readerLikes.readLine()) != null) {
                 String[] parts = lineLike.split(",");
-                int currentPostId = Integer.parseInt(parts[0]);
-                if (currentPostId == postId && username.equals(parts[1])) {
-                    // Gasit postul cu ID-ul specificat in fisierul like.csv
+                int currentCommId = Integer.parseInt(parts[0]);
+                if (currentCommId == commId && username.equals(parts[1])) {
                     int currentNrLikes = Integer.parseInt(parts[2]);
                     currentNrLikes--; // scadere nrLikes
                     this.nrLikes = currentNrLikes;
-                    lineLike = currentPostId + "," + parts[1] + "," + currentNrLikes;
-                    postFound = true;
-                } else {
-                    tempLikes.add(lineLike);
+                    lineLike = currentCommId + "," + parts[1] + "," + currentNrLikes;
+                    commFound = true;
                 }
+                tempLikes.add(lineLike);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try (BufferedReader readerPosts = new BufferedReader(new FileReader("comentariu.csv"))) {
-            String linePosts;
-            while ((linePosts = readerPosts.readLine()) != null) {
-                String[] partsPosts = linePosts.split(",");
-                int currentPostIdPosts = Integer.parseInt(partsPosts[0]);
-                if (currentPostIdPosts == postId) {
-                    int currentNrLikes = Integer.parseInt(partsPosts[5]);
+        try (BufferedReader readerComm = new BufferedReader(new FileReader("comentariu.csv"))) {
+            String lineComm;
+            while ((lineComm = readerComm.readLine()) != null) {
+                String[] partsComm = lineComm.split(",");
+                int currentCommId = Integer.parseInt(partsComm[0]);
+                if (currentCommId == commId) {
+                    int currentNrLikes = Integer.parseInt(partsComm[5]);
                     currentNrLikes--; // scadere nrLikes
-                    linePosts = currentPostIdPosts + "," + partsPosts[1] + "," + partsPosts[2] + "," + partsPosts[3] + "," + partsPosts[4] + "," + currentNrLikes; // actualizare linie
+                    lineComm = currentCommId + "," + partsComm[1] + "," + partsComm[2] + "," + partsComm[3] + "," + partsComm[4] + "," + currentNrLikes; // actualizare linie
                 }
-                tempPosts.add(linePosts);
+                tempComm.add(lineComm);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (!postFound) {
+        if (!commFound) {
             System.out.println("{'status':'error','message':'The comment identifier to unlike was not valid'}");
-            tempPosts.clear();
+            tempComm.clear();
             tempLikes.clear();
             return;
         } else {
             System.out.println("{'status':'ok','message':'Operation executed successfully'}");
         }
 
-        try (PrintWriter writerPosts = new PrintWriter(new FileWriter("comentariu.csv"))) {
-            for (String post : tempPosts) {
-                writerPosts.println(post);
+        try (PrintWriter writerComm = new PrintWriter(new FileWriter("comentariu.csv"))) {
+            for (String comm : tempComm) {
+                writerComm.println(comm);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        tempPosts.clear();
+        tempComm.clear();
 
         try (PrintWriter writerLikes = new PrintWriter(new FileWriter("likeComentariu.csv"))) {
             for (String like : tempLikes) {

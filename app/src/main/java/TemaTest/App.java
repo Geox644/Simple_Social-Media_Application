@@ -3,8 +3,10 @@
  */
 package TemaTest;
 
-import java.io.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class App {
 
@@ -14,7 +16,7 @@ public class App {
     private static void cleanupAll() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("users.csv"))) {
             writer.print("");
-            System.out.println("All user data cleaned up!");
+            System.out.println("Clean");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -23,7 +25,7 @@ public class App {
 
         try (PrintWriter postareWriter = new PrintWriter(new FileWriter("follows.csv"))) {
             postareWriter.print("");
-            System.out.println("All post data cleaned up!");
+            System.out.println("Clean");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,30 +34,25 @@ public class App {
 
         try (PrintWriter postareWriter = new PrintWriter(new FileWriter("likePostare.csv"))) {
             postareWriter.print("");
-            System.out.println("All post data cleaned up!");
+            System.out.println("Clean");
         } catch (IOException e) {
             e.printStackTrace();
         }
         try (PrintWriter postareWriter = new PrintWriter(new FileWriter("likeComentariu.csv"))) {
             postareWriter.print("");
-            System.out.println("All post data cleaned up!");
+            System.out.println("Clean");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static String extractArgument(String args) {
-        // Cauta indexul inceputului ghilimelelor
         int startIndex = args.indexOf("'");
-        // Cauta indexul sfarsitului ghilimelelor pornind de la indexul gasit anterior
         int endIndex = args.indexOf("'", startIndex + 1);
 
-        // Verifica daca s-au gasit ambele ghilimele
         if (startIndex != -1 && endIndex != -1) {
-            // Returneaza textul dintre ghilimele
             return args.substring(startIndex + 1, endIndex);
         } else {
-            // in caz contrar, returneaza un sir gol sau poti arunca o exceptie, in functie de necesitati
             return "";
         }
     }
@@ -85,8 +82,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                user.createUser(arg1, arg2);
-                // System.out.println("{'status':'ok','message':'User created successfully'}");
+                user.createUser(arg1);
             }
         }
 
@@ -100,15 +96,13 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No text provided'}");
                 } else {
                     String arg3 = extractArgument(strings[3]);
                     Postare post = new Postare(arg3, arg1);
-//                     Postare post2 = new Postare("veb");
-//                     Postare post3 = new Postare("salut");
                     if (!post.textLength()) {
                         System.out.println("{'status':'error','message':'Post text length exceeded'}");
 
@@ -116,22 +110,6 @@ public class App {
                         System.out.println("{'status':'ok','message':'Post added successfully'}");
                         post.writeToFile();
 
-//                        /*  verificari  */
-//                        System.out.println("Post ID: " + post.getId());
-//                        System.out.println("Post Text: " + post.getText());
-//
-//                        System.out.println("Post ID: " + post2.getId());
-//                        System.out.println("Post Text: " + post2.getText());
-//
-//                        System.out.println("Post ID: " + post3.getId());
-//                        System.out.println("Post Text: " + post3.getText());
-//
-//                        // Afiseaza toate postarile existente
-//                        ArrayList<Postare> allPosts = Postare.getPostList();
-//                        System.out.println("All Posts:");
-//                        for (Postare p : allPosts) {
-//                            System.out.println("Post ID: " + p.getId() + ", Text: " + p.getText());
-//                        }
                     }
                 }
             }
@@ -147,7 +125,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else {
                     String postIdString = extractArgument(strings[3]);
@@ -170,7 +148,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No username to follow was provided'}");
@@ -192,7 +170,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No username to unfollow was provided'}");
@@ -215,7 +193,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No text provided'}");
@@ -245,7 +223,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No identifier was provided'}");
@@ -267,7 +245,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No post identifier to like was provided'}");
@@ -293,7 +271,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No post identifier to unlike was provided'}");
@@ -318,7 +296,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No comment identifier to like was provided'}");
@@ -344,7 +322,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No comment identifier to unlike was provided'}");
@@ -360,7 +338,7 @@ public class App {
             }
         }
 
-        /*  LISTA POSTARILOR PERSOANELOR URMARITE, ORDONATE DESCRESCATOR DUPA DATA  ~ nu am ordonat descrecator */
+        /*  LISTA POSTARILOR PERSOANELOR URMARITE, ORDONATE DESCRESCATOR DUPA DATA  */
 
         if (strings[0].equals("-get-followings-posts")) {
             if (strings.length == 1) {
@@ -371,7 +349,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else {
                     Postare post = new Postare(null, null);
@@ -388,11 +366,20 @@ public class App {
             } else {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
+
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No username to list posts was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    if (user.isAlreadyUnfollowed(arg3)) {
+                        System.out.println("{'status':'error','message':'The username to list posts was not valid'}");
+                    } else {
+                        Postare post = new Postare(null, null);
+                        post.UserListPost(arg3);
+                    }
                 }
             }
         }
@@ -407,10 +394,17 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No post identifier was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    if (!arg3.isEmpty()) {
+                        Postare post = new Postare(null, null);
+                        int arg3Int = Integer.parseInt((arg3));
+                        post.detaliiPostare(arg3Int);
+                    }
                 }
             }
         }
@@ -424,7 +418,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else {
                     user.listaPersoaneUrmarite(arg1);
@@ -442,7 +436,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 } else if (strings.length == 3) {
                     System.out.println("{'status':'error','message':'No username to list followers was provided'}");
@@ -463,7 +457,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 }
             }
@@ -479,7 +473,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 }
             }
@@ -495,8 +489,10 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
+                } else {
+                    user.topCinciCeiMaiUrmaritiUsers();
                 }
             }
         }
@@ -511,7 +507,7 @@ public class App {
                 String arg1 = extractArgument(strings[1]);
                 String arg2 = extractArgument(strings[2]);
                 Utilizator user = new Utilizator(arg1, arg2);
-                if (!user.login()) {
+                if (user.checkLogin()) {
                     System.out.println("{'status':'error','message':'Login failed'}");
                 }
             }
