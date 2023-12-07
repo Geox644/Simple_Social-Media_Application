@@ -3,11 +3,523 @@
  */
 package TemaTest;
 
+import java.io.*;
+
+
 public class App {
-    
-public App() {/* compiled code */}
+
+    public App() {/* compiled code */}
+
+    /*  CLEANUP  */
+    private static void cleanupAll() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("users.csv"))) {
+            writer.print("");
+            System.out.println("All user data cleaned up!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Postare.clean();
+
+        try (PrintWriter postareWriter = new PrintWriter(new FileWriter("follows.csv"))) {
+            postareWriter.print("");
+            System.out.println("All post data cleaned up!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Comentariu.clean();
+
+        try (PrintWriter postareWriter = new PrintWriter(new FileWriter("likePostare.csv"))) {
+            postareWriter.print("");
+            System.out.println("All post data cleaned up!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (PrintWriter postareWriter = new PrintWriter(new FileWriter("likeComentariu.csv"))) {
+            postareWriter.print("");
+            System.out.println("All post data cleaned up!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String extractArgument(String args) {
+        // Cauta indexul inceputului ghilimelelor
+        int startIndex = args.indexOf("'");
+        // Cauta indexul sfarsitului ghilimelelor pornind de la indexul gasit anterior
+        int endIndex = args.indexOf("'", startIndex + 1);
+
+        // Verifica daca s-au gasit ambele ghilimele
+        if (startIndex != -1 && endIndex != -1) {
+            // Returneaza textul dintre ghilimele
+            return args.substring(startIndex + 1, endIndex);
+        } else {
+            // in caz contrar, returneaza un sir gol sau poti arunca o exceptie, in functie de necesitati
+            return "";
+        }
+    }
+
 
     public static void main(java.lang.String[] strings) {
-        System.out.print("Hello world!");
+
+        /*  CLEANUP  */
+
+
+        if (strings == null) {
+            System.out.println("Hello world!");
+            return;
+        }
+        if (strings[0].equals("-cleanup-all")) {
+            cleanupAll();
+        }
+
+        /*  CREATE USER  */
+        if (strings[0].equals("-create-user")) {
+
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'Please provide username'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'Please provide password'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                user.createUser(arg1, arg2);
+                // System.out.println("{'status':'ok','message':'User created successfully'}");
+            }
+        }
+
+        /*  POSTARE  */
+        if (strings[0].equals("-create-post")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No text provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    Postare post = new Postare(arg3, arg1);
+//                     Postare post2 = new Postare("veb");
+//                     Postare post3 = new Postare("salut");
+                    if (!post.textLength()) {
+                        System.out.println("{'status':'error','message':'Post text length exceeded'}");
+
+                    } else {
+                        System.out.println("{'status':'ok','message':'Post added successfully'}");
+                        post.writeToFile();
+
+//                        /*  verificari  */
+//                        System.out.println("Post ID: " + post.getId());
+//                        System.out.println("Post Text: " + post.getText());
+//
+//                        System.out.println("Post ID: " + post2.getId());
+//                        System.out.println("Post Text: " + post2.getText());
+//
+//                        System.out.println("Post ID: " + post3.getId());
+//                        System.out.println("Post Text: " + post3.getText());
+//
+//                        // Afiseaza toate postarile existente
+//                        ArrayList<Postare> allPosts = Postare.getPostList();
+//                        System.out.println("All Posts:");
+//                        for (Postare p : allPosts) {
+//                            System.out.println("Post ID: " + p.getId() + ", Text: " + p.getText());
+//                        }
+                    }
+                }
+            }
+        }
+
+        /*  STERGE POSTARE  */
+        if (strings[0].equals("-delete-post-by-id")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else {
+                    String postIdString = extractArgument(strings[3]);
+                    if (!postIdString.isEmpty()) {
+                        int postId = Integer.parseInt((postIdString));
+                        Postare.deletePostByIdFromFile(postId);
+                    }
+
+                }
+            }
+        }
+        /*  4. FOLLOW UTILIZATOR  */
+
+        if (strings[0].equals("-follow-user-by-username")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No username to follow was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    user.followUser(arg3);
+                }
+
+            }
+        }
+
+        /*  5. UNFOLLOW UTILIZATOR  */
+        if (strings[0].equals("-unfollow-user-by-username")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No username to unfollow was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    user.unfollowUser(arg3);
+                }
+            }
+        }
+
+
+        /*  COMENTARIU POSTARE  */
+
+        if (strings[0].equals("-comment-post")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No text provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    String arg4 = extractArgument(strings[4]);
+                    int arg3Int = Integer.parseInt((arg3));
+                    Comentariu comm = new Comentariu(arg4, arg3Int, arg1, arg2);
+
+                    if (!comm.textLength()) {
+                        System.out.println("{'status':'error','message':'Comment text length exceeded'}");
+
+                    } else {
+                        System.out.println("{'status':'ok','message':'Comment added successfully'}");
+                        comm.writeToFile();
+                    }
+                }
+            }
+        }
+
+        if (strings[0].equals("-delete-comment-by-id")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No identifier was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    int arg3Int = Integer.parseInt((arg3));
+                    Comentariu.deleteCommByIdFromFile(arg3Int, arg1, arg2);
+                }
+            }
+        }
+
+        /*  LIKE POST  */
+        if (strings[0].equals("-like-post")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No post identifier to like was provided'}");
+                } else {
+                    String postIdString = extractArgument(strings[3]);
+                    if (!postIdString.isEmpty()) {
+                        int postId = Integer.parseInt(postIdString);
+                        Postare post = new Postare(null, null);
+                        post.like(postId, arg1);
+                    }
+
+                }
+            }
+        }
+
+        /*  UNLIKE POSTARE  */
+        if (strings[0].equals("-unlike-post")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No post identifier to unlike was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    if (!arg3.isEmpty()) {
+                        Postare post = new Postare(null, null);
+                        int arg3Int = Integer.parseInt((arg3));
+                        post.unlike(arg3Int, arg1);
+                    }
+                }
+            }
+        }
+
+        /*  LIKE COMENTARIU  */
+        if (strings[0].equals("-like-comment")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No comment identifier to like was provided'}");
+                } else {
+                    String commIdString = extractArgument(strings[3]);
+
+                    if (!commIdString.isEmpty()) {
+                        int commId = Integer.parseInt((commIdString));
+                        Comentariu comm = new Comentariu(null, commId, null, null);
+                        comm.like(commId, arg1);
+                    }
+                }
+            }
+        }
+
+        /*  UNLIKE COMENATRIU  */
+        if (strings[0].equals("-unlike-comment")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No comment identifier to unlike was provided'}");
+                } else {
+                    String commIdString = extractArgument(strings[3]);
+
+                    if (!commIdString.isEmpty()) {
+                        int commId = Integer.parseInt((commIdString));
+                        Comentariu comm = new Comentariu(null, commId, null, null);
+                        comm.unlike(commId, arg1);
+                    }
+                }
+            }
+        }
+
+        /*  LISTA POSTARILOR PERSOANELOR URMARITE, ORDONATE DESCRESCATOR DUPA DATA  ~ nu am ordonat descrecator */
+
+        if (strings[0].equals("-get-followings-posts")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else {
+                    Postare post = new Postare(null, null);
+                    post.followedListPostDate(arg1);
+                }
+            }
+        }
+        /*  LISTA POSTARI PER UTILIZATOR, ORDONATE DESCRESCATOR DUPA DATA  ~ nu am ordonat descrecator  */
+        if (strings[0].equals("-get-user-posts")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No username to list posts was provided'}");
+                }
+            }
+        }
+
+        /*  DETALII POSTARE  */
+        if (strings[0].equals("-get-post-details")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No post identifier was provided'}");
+                }
+            }
+        }
+        /*  LISTA FOLLOWING PER UTILIZATOR   */
+        if (strings[0].equals("-get-following")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else {
+                    user.listaPersoaneUrmarite(arg1);
+                }
+            }
+        }
+
+        /*  LISTA FOLLOWERS PER UTILIZATOR   */
+        if (strings[0].equals("-get-followers")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                } else if (strings.length == 3) {
+                    System.out.println("{'status':'error','message':'No username to list followers was provided'}");
+                } else {
+                    String arg3 = extractArgument(strings[3]);
+                    user.listaUrmaritori(arg3);
+                }
+            }
+        }
+
+        /*  TOP 5 LIKE POST  */
+        if (strings[0].equals("-get-most-liked-posts")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                }
+            }
+        }
+
+        /*  TOP 5 COMMENTED POST  */
+        if (strings[0].equals("-get-most-commented-posts")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                }
+            }
+        }
+
+        /*  TOP 5 FOLLOWED USERS  */
+        if (strings[0].equals("-get-most-followed-users")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                }
+            }
+        }
+
+        /*  TOP 5 LIKED USERS  */
+        if (strings[0].equals("-get-most-liked-users")) {
+            if (strings.length == 1) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else if (strings.length == 2) {
+                System.out.println("{'status':'error','message':'You need to be authenticated'}");
+            } else {
+                String arg1 = extractArgument(strings[1]);
+                String arg2 = extractArgument(strings[2]);
+                Utilizator user = new Utilizator(arg1, arg2);
+                if (!user.login()) {
+                    System.out.println("{'status':'error','message':'Login failed'}");
+                }
+            }
+        }
+
+
     }
 }
+
+
+
